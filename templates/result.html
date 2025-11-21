@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Results</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+<body>
+    <div class="container">
+    <h2>Generated Email(s)</h2>
+    
+    <h3>Prompt Used</h3>
+    <pre>{{ prompt }}</pre> <!--<pre> tag Keeps spaces, tabs, and line breaks exactly as written.-->
+    
+    {% for v in variants %}
+    <div class="variant-box">
+        <h3>variant {{ loop.index }}</h3> <!--Jinja 2 creates a special variable 'loop' whenever a loop runs. 'loop.index' gives 1-based-index values(1,2,3...). So, to show: for e.g., Variant 1, Variant 2.-->
+        <form action="/download" method="POST">
+            <textarea name="text" rows="12" cols="70"> {{ v }}</textarea><br> <!--Display the generated email-->
+            <button type="submit">Download</button>
+        </form>
+    </div>
+    {% endfor %}
+
+    <a href="/">Generate Again</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,119 @@
+/* -----------------------------------------------------------
+   General Page Styling
+----------------------------------------------------------- */
+body {
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    margin: 0;
+    padding: 20px 0;
+    background: linear-gradient(135deg, #FFDEE9 0%, #B5FFFC 100%);
+    color: #222;
+}
+
+/* Centered container */
+.container {
+    background: white;
+    max-width: 900px;
+    margin: auto;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+/* Headings */
+h1 {
+    color: #2d3436;
+    text-align: center;
+    font-size: 32px;
+}
+
+h2, h3 {
+    color: #2d3436;
+    margin-top: 25px;
+}
+
+/* -----------------------------------------------------------
+   Inputs + Textareas
+----------------------------------------------------------- */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 2px solid #e0e0e0;
+    margin-bottom: 20px;
+    font-size: 15px;
+    transition: 0.2s ease-in-out;
+    background: #fafafa;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #6c5ce7;
+    background: #fff;
+    box-shadow: 0 0 8px rgba(108,92,231,0.3);
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* -----------------------------------------------------------
+   Buttons
+----------------------------------------------------------- */
+button {
+    background: linear-gradient(135deg, #6c5ce7, #a363d9);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(108,92,231,0.4);
+}
+
+/* Links */
+a {
+    display: inline-block;
+    margin-top: 20px;
+    color: #6c5ce7;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* -----------------------------------------------------------
+   Prompt + Outputs
+----------------------------------------------------------- */
+pre {
+    background: #f3e5f5;
+    border-left: 4px solid #9b59b6;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+/* Variant Box */
+.variant-box {
+    background: #ffffff;
+    border-radius: 10px;
+    border-left: 5px solid #6c5ce7;
+    padding: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.variant-box textarea {
+    background: #f8f9fa;
+}
