@@ -2,3 +2,4 @@
 pip install torch
 pip install -U sentence-transformers==2.5.1 transformers==4.35.2 huggingface_hub==0.22.2 accelerate==0.27.2
 pip install flask typing
+pip install faiss-cpu PyPDF2
