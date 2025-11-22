@@ -49,11 +49,50 @@ def generate():
     # Preparing inputs
     key_points_list = [kp.strip() for kp in key_points.splitlines() if kp.strip()] # '.splitlines()' splits the key points separated by (\n) by the user into separate strings in the list. 'if kp.strip()' is used because: as you know '.strip()' removes the empty spaces from start and end of the string, now if a string is empty from inside or has empty spaces inside, then .strip() will make "  " into "". Now 'if' returns true only when string is non-empty, i.e., has some characters inside. Now, if the string is empty ("") after .strip(), that particular string won't be stored inside the key_points_list.
     key_points_text = "; ".join(key_points_list) # This converts all the key_points' strings into a single string separated by '; ' so that the model understand the key points in a contiguous manner.
-    past_emails = [p.strip() for p in re.split(r'\n{2,}', past_text.strip()) if p.strip()] # Past text js a single string that contains past emails. If there are blank lines (\n\n) in the end and start of the entire past email text, then past_text.strip() removes it. 'past_text.strip()' is the input string in 're.split()'. Usually, the user separates the emails with 2 or more blank lines. "r'\n{2,}'" splits the string into sub strings which are the separated emails stored as a string in the past_email list. 'if p.strip()' does the same thing as discussed above.
+
+
+    #  HANDLING FILE INGESTION: txt & pdf
+    uploaded_files = request.files.getlist("documents")
+    raw_docs=[]
+    for f in uploaded_files:
+        if not f or f.filename == "":
+            continue
+        filename = f.filename.lower()
+        if filename.endswith(".txt"):
+            try: 
+                f.seek(0) # See the below 'f.seek(0)' to know about it.
+                raw_docs.append(f.read().decode("utf-8"))
+            except Exception:
+                f.seek(0)
+                raw_docs.append(f.read().decode("latin-1")) # fallback: read as latin-1. 'fallback' means backup.
+        
+        elif filename.endswith(".pdf"):
+            try:
+                import PyPDF2
+                try:
+                    f.seek(0) # The upload PDF file can have the pointer which is pointing to the page which the user was reading. To set the pointer of the PDF to the first page, we use f.seek(0) to reset the pdf file's pointer to 0 which is the start of that pdf file. If flask reject 'f.seek(0)' pass the file with the current pointer only.
+                except Exception:
+                    pass
+                reader = PyPDF2.PdfReader(f)
+                text = ""
+                for i, page in enumerate(reader.pages): # Iterating through the pages in the PDF.
+                    page_text = page.extract_text() or ""
+                    text += f"[PAGE {i+1}]\n" + page_text + "\n\n" # Appends the page_text along with its page number. Giving page numbers is required so that correct context is capture when user also specify the page number / or there is a mention of page number in of the pdf's page in the past_emails / past_text.
+                raw_docs.append(text)
+            except Exception as e:
+                print("PDF read error:", e) # If error occurs, print that error.
+
+
+    if raw_docs:
+        past_text = (past_text.strip() + "\n\n" + "\n\n".join(raw_docs)).strip()
+    
+    past_emails = [p.strip() for p in re.split(r'\n{2,}', past_text.strip()) if p.strip()]  # Past text js a single string that contains past emails. If there are blank lines (\n\n) in the end and start of the entire past email text, then past_text.strip() removes it. 'past_text.strip()' is the input string in 're.split()'. Usually, the user separates the emails with 2 or more blank lines. "r'\n{2,}'" splits the string into sub strings which are the separated emails stored as a string in the past_email list. 'if p.strip()' does the same thing as discussed above.
     query_for_retrieval = purpose + " " + key_points_text
+
 
     # Retrieve relevant context
     context_text = retrieve_context(bert, past_emails, query_for_retrieval, top_k=top_k) # Passing arguments to get the context_text.
+
 
     # Building prompt
     prompt = PROMPT_TEMPLATE.format(
@@ -63,6 +102,7 @@ def generate():
         past = context_text or "No previous conversation provided.", # If empty use this message.
         key_points = key_points_text
     )
+
 
     # Generating outputs
     variants = generate_email_gpt(
