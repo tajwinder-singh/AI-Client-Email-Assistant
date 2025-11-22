@@ -11,7 +11,7 @@
     <h1>AI Client Email Assistant — Flask Version</h1>
     <p>Generate professional client emails using retrieval + generation.</p>
     
-    <form action="/generate" method="POST"> <!--The form will take the input when app.py renders index.html -->
+    <form action="/generate" method="POST" enctype="multipart/form-data"> <!--The form will take the input when app.py renders index.html. Without 'enctype = ...' request.files will be empty.  -->
         <h3>Purpose</h3>
         <input type="text" name="purpose" placeholder="Follow up on proposal submission">
 
@@ -37,6 +37,9 @@
 
         <h3>Past Conversation / Past Emails</h3>
         <textarea name="past_text" rows="8" cols="60"></textarea>
+        
+        <h3>Upload documents (optional)</h3>
+        <input type="file" name="documents" multiple accept=".txt,.pdf">
 
         <h3>Settings</h3>
         Top-k: <input type="number" name="top_k" value="2"><br><br>
